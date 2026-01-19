@@ -58,5 +58,3 @@ class AssetModel(BaseDataModel):
         
         return None
 
-
-    
