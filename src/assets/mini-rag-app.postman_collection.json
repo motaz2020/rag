@@ -31,7 +31,6 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
-				"requests": {},
 				"exec": [
 					""
 				]
@@ -42,7 +41,6 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
-				"requests": {},
 				"exec": [
 					""
 				]
@@ -52,7 +50,8 @@
 	"variable": [
 		{
 			"key": "api",
-			"value": ""
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
 		}
 	]
 }
