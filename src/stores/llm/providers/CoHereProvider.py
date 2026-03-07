@@ -51,13 +51,17 @@ class CoHereProvider(LLMInterface):
         max_output_tokens = max_output_tokens if max_output_tokens else self.default_generation_max_output_tokens
         temperature = temperature if temperature else self.default_generation_temperature
 
-        response = self.client.chat(
-            model = self.generation_model_id,
-            chat_history = chat_history,
-            message = self.process_text(prompt),
-            temperature = temperature,
-            max_tokens = max_output_tokens
-        )
+        try:
+            response = self.client.chat(
+                model = self.generation_model_id,
+                chat_history = chat_history,
+                message = self.process_text(prompt),
+                temperature = temperature,
+                max_tokens = max_output_tokens
+            )
+        except Exception as e:
+            self.logger.error(f"Error while generating text with CoHere: {e}")
+            return None
 
         if not response or not response.text:
             self.logger.error("Error while generating text with CoHere")
@@ -81,12 +85,16 @@ class CoHereProvider(LLMInterface):
         if document_type == DocumentTypeEnum.QUERY:
             input_type = CoHereEnums.QUERY
 
-        response = self.client.embed(
-            model = self.embedding_model_id,
-            texts = [ self.process_text(t) for t in text ],
-            input_type = input_type,
-            embedding_types=['float'],
-        )
+        try:
+            response = self.client.embed(
+                model = self.embedding_model_id,
+                texts = [ self.process_text(t) for t in text ],
+                input_type = input_type,
+                embedding_types=['float'],
+            )
+        except Exception as e:
+            self.logger.error(f"Error while embedding text with CoHere: {e}")
+            return None
 
         if not response or not response.embeddings or not response.embeddings.float:
             self.logger.error("Error while embedding text with CoHere")

@@ -1,6 +1,6 @@
-from fastapi import FastAPI, APIRouter, status, Request
+from fastapi import FastAPI, APIRouter, status, Request, Body
 from fastapi.responses import JSONResponse
-from routes.schemes.nlp import PushRequest, SearchRequest
+from routes.schemes.nlp import SearchRequest
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
 from controllers import NLPController
@@ -17,8 +17,11 @@ nlp_router = APIRouter(
 )
 
 @nlp_router.post("/index/push/{project_id}")
-async def index_project(request: Request, project_id: int, push_request: PushRequest):
-
+async def index_project(
+    request: Request,
+    project_id: int,
+    do_reset: int = 0,
+):
     project_model = await ProjectModel.create_instance(
         db_client=request.app.db_client
     )
@@ -57,7 +60,7 @@ async def index_project(request: Request, project_id: int, push_request: PushReq
     _ = await request.app.vectordb_client.create_collection(
         collection_name=collection_name,
         embedding_size=request.app.embedding_client.embedding_size,
-        do_reset=push_request.do_reset,
+        do_reset=bool(do_reset),
     )
 
     # setup batching
